@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Memo List — 반응형 메모 웹</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,wght@0,500;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline-variant": "#bfc9c1",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#ece1d6",
+            "inverse-on-surface": "#f2f1ee",
+            "on-surface": "#1a1c1a",
+            "inverse-primary": "#95d4b3",
+            "primary": "#0f5238",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed-variant": "#4c463e",
+            "on-primary-container": "#a8e7c5",
+            "tertiary-container": "#655e55",
+            "outline": "#707973",
+            "tertiary-fixed-dim": "#cfc5ba",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#2f1500",
+            "primary-fixed": "#b1f0ce",
+            "surface-container-highest": "#e3e2e0",
+            "secondary-fixed-dim": "#ffb77d",
+            "on-secondary": "#ffffff",
+            "primary-fixed-dim": "#95d4b3",
+            "on-error-container": "#93000a",
+            "surface-container": "#efeeeb",
+            "tertiary": "#4d463e",
+            "surface-container-high": "#e9e8e5",
+            "error": "#ba1a1a",
+            "surface-container-low": "#f4f3f1",
+            "surface": "#faf9f6",
+            "surface-dim": "#dbdad7",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#663500",
+            "secondary": "#904d00",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary-container": "#fe932c",
+            "on-tertiary-container": "#e3d8cd",
+            "surface-tint": "#2c694e",
+            "on-surface-variant": "#404943",
+            "background": "#faf9f6",
+            "on-background": "#1a1c1a",
+            "surface-variant": "#e3e2e0",
+            "on-tertiary-fixed": "#201b14",
+            "inverse-surface": "#2f312f",
+            "primary-container": "#2d6a4f",
+            "secondary-fixed": "#ffdcc3",
+            "surface-bright": "#faf9f6",
+            "on-secondary-fixed-variant": "#6e3900",
+            "on-primary-fixed": "#002114"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "margin": "1.25rem",
+            "space-lg": "1.5rem"
+          },
+          fontFamily: {
+            "display-title-mobile": ["Newsreader", "serif"],
+            "display-title": ["Newsreader", "serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "mono-code": ["JetBrains Mono", "monospace"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            "display-title-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "500" }],
+            "display-title": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+            "headline-sm": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "mono-code": ["13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "19px", "letterSpacing": "0.005em", "fontWeight": "400" }],
+            "body-lg": ["17px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @layer base {
+      html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        min-height: 100dvh;
+        background-color: #faf9f6;
+      }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased flex flex-col md:flex-row min-h-screen">
+
+  <!-- Desktop Sidebar Navigation (md 이상에서 표시) -->
+  <aside class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 md:left-0 z-40 bg-surface-container-low border-r border-outline-variant/30 px-5 py-6 justify-between">
+    <div class="flex flex-col gap-6">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2.5 px-1">
+        <img alt="Memo App Icon" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCl_xaIAXd4Y6HIbLh7_E_-bxPltlyq0AQbxRk5QCL0djZgQFdNNsya5IHfc0nVICXpCkHHqgAfOuIboQNuU8cBpn4YQKR0OeMFvdwQSTHiBY1LqIzDbzudaUqts5ljcx_LcS_HkV_mxWFCLi1cQCegF-XltrWkOG_NqzJlyIpZ_4XPJ21Xds7-6Uk1qEQwuUeQrTzgdb58jf9EviREDWUgPQNdptuGyUWgLkCszaWP" />
+        <span class="font-headline-md text-headline-md text-on-surface tracking-tight">Memo List</span>
+      </div>
+
+      <!-- Desktop Create Button -->
+      <button type="button" class="w-full h-12 px-4 rounded-xl bg-primary text-on-primary flex items-center justify-center gap-2 shadow-sm hover:bg-primary-container transition-all active:scale-[0.98] cursor-pointer">
+        <span class="material-symbols-outlined text-[22px]">add</span>
+        <span class="font-label-md text-label-md font-semibold">새 메모 작성</span>
+      </button>
+
+      <!-- Desktop Menu Links -->
+      <nav class="flex flex-col gap-1.5" aria-label="주 메뉴">
+        <a aria-current="page" href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-primary/10 text-primary font-semibold transition-colors">
+          <span class="material-symbols-outlined text-[22px]">description</span>
+          <span class="font-body-md text-body-md">전체 메모</span>
+          <span class="ml-auto font-label-sm text-label-sm bg-primary/15 text-primary px-2 py-0.5 rounded-full">24</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[22px]">folder</span>
+          <span class="font-body-md text-body-md">폴더 관리</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[22px]">search</span>
+          <span class="font-body-md text-body-md">통합 검색</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-[22px]">tune</span>
+          <span class="font-body-md text-body-md">환경 설정</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer: Profile & Sync Status -->
+    <div class="flex items-center gap-3 pt-4 border-t border-outline-variant/30 px-1">
+      <img alt="Profile" class="w-9 h-9 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBwsXnN8BIvVM9k_bT0qYGtsBouyUoSzBgyknBN2lP9DHnu4thOchsEEorSUIVCmVHPIyR_-0tYcI5BnB-HZerxaNUAiUxITEluqRW6rN78UM6h512V2HT56gWw51j7tWMsm4h5gPC0ssqD840AUm7J74EMQ4RmJrCeYJ5DvzeA-zlUYBf5LcSosQgto2ZpSaUIMa6bvDjrLufXKfvkAYwk9lMYmeEJLqpuVW-L7Vj" />
+      <div class="flex flex-col min-w-0">
+        <span class="font-label-md text-label-md text-on-surface truncate">내 워크스페이스</span>
+        <span class="font-label-sm text-label-sm text-primary flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          동기화 완료
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Top Header (md 미만에서만 표시) -->
+  <header class="md:hidden fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+    <div class="h-16 px-margin flex items-center justify-between">
+      <div class="flex items-center gap-space-sm">
+        <img alt="Memo App Icon" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrCl_xaIAXd4Y6HIbLh7_E_-bxPltlyq0AQbxRk5QCL0djZgQFdNNsya5IHfc0nVICXpCkHHqgAfOuIboQNuU8cBpn4YQKR0OeMFvdwQSTHiBY1LqIzDbzudaUqts5ljcx_LcS_HkV_mxWFCLi1cQCegF-XltrWkOG_NqzJlyIpZ_4XPJ21Xds7-6Uk1qEQwuUeQrTzgdb58jf9EviREDWUgPQNdptuGyUWgLkCszaWP" />
+        <h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Memo List</h1>
+      </div>
+      <div class="flex items-center gap-space-xs">
+        <button aria-label="Search" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+          <span class="material-symbols-outlined text-[24px]">search</span>
+        </button>
+        <div class="w-11 h-11 flex items-center justify-center">
+          <img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBwsXnN8BIvVM9k_bT0qYGtsBouyUoSzBgyknBN2lP9DHnu4thOchsEEorSUIVCmVHPIyR_-0tYcI5BnB-HZerxaNUAiUxITEluqRW6rN78UM6h512V2HT56gWw51j7tWMsm4h5gPC0ssqD840AUm7J74EMQ4RmJrCeYJ5DvzeA-zlUYBf5LcSosQgto2ZpSaUIMa6bvDjrLufXKfvkAYwk9lMYmeEJLqpuVW-L7Vj" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 w-full md:pl-64 pt-20 md:pt-10 pb-28 md:pb-16 px-margin md:px-10 lg:px-14 bg-surface">
+    <div class="max-w-6xl mx-auto flex flex-col w-full">
+
+      <!-- Top Greeting & Desktop Search Bar -->
+      <section class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6 md:mb-8">
+        <div class="flex flex-col gap-1.5">
+          <div class="flex items-center gap-3">
+            <span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider">4월 21일 월요일</span>
+            <span class="md:hidden font-label-sm text-label-sm text-primary flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              동기화 완료
+            </span>
+          </div>
+          <h2 class="font-display-title-mobile md:font-display-title text-display-title-mobile md:text-display-title text-on-surface">
+            정리된 여백 위에, <br class="sm:hidden" />
+            <span class="italic text-primary">생각을 단정히</span> 담아보세요.
+          </h2>
+        </div>
+
+        <!-- Desktop Inline Search Input (md 이상에서 표시) -->
+        <div class="hidden md:flex items-center bg-surface-container-low border border-outline-variant/40 focus-within:border-primary rounded-full px-4 h-11 w-full lg:w-72 transition-colors">
+          <span class="material-symbols-outlined text-[20px] text-tertiary mr-2">search</span>
+          <input type="text" placeholder="메모 제목, 태그 검색..." class="bg-transparent border-none outline-none text-body-sm text-on-surface placeholder:text-tertiary w-full" />
+        </div>
+      </section>
+
+      <!-- Horizontal Filter Chips -->
+      <section class="w-full -mx-margin px-margin md:mx-0 md:px-0 mb-space-lg overflow-x-auto no-scrollbar flex items-center gap-2 py-1">
+        <button class="filter-chip active flex-shrink-0 h-[36px] px-4 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center transition-all active:scale-95 shadow-sm cursor-pointer" type="button">
+          전체 <span class="ml-1.5 opacity-80 font-label-sm text-label-sm">24</span>
+        </button>
+        <button class="filter-chip flex-shrink-0 h-[36px] px-4 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md flex items-center justify-center transition-all active:scale-95 hover:bg-surface-container cursor-pointer" type="button">
+          고정됨 <span class="ml-1.5 text-tertiary font-label-sm text-label-sm">3</span>
+        </button>
+        <button class="filter-chip flex-shrink-0 h-[36px] px-4 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md flex items-center justify-center transition-all active:scale-95 hover:bg-surface-container cursor-pointer" type="button">
+          업무 <span class="ml-1.5 text-tertiary font-label-sm text-label-sm">8</span>
+        </button>
+        <button class="filter-chip flex-shrink-0 h-[36px] px-4 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md flex items-center justify-center transition-all active:scale-95 hover:bg-surface-container cursor-pointer" type="button">
+          아이디어 <span class="ml-1.5 text-tertiary font-label-sm text-label-sm">6</span>
+        </button>
+        <button class="filter-chip flex-shrink-0 h-[36px] px-4 rounded-full bg-surface-container-low text-on-surface-variant font-label-md text-label-md flex items-center justify-center transition-all active:scale-95 hover:bg-surface-container cursor-pointer" type="button">
+          개인 <span class="ml-1.5 text-tertiary font-label-sm text-label-sm">7</span>
+        </button>
+      </section>
+
+      <!-- Pinned Notes Section (모바일 1열 -> 태블릿/PC 2열) -->
+      <section class="flex flex-col gap-3 mb-space-xl">
+        <div class="flex items-center justify-between px-0.5">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px] text-secondary" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface">고정된 메모</h3>
+          </div>
+          <span class="font-label-sm text-label-sm text-tertiary">2건 고정</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+          <!-- Pinned Card 1 -->
+          <article class="w-full bg-surface-container-low rounded-xl p-4 md:p-5 shadow-[0_2px_10px_-2px_rgba(60,50,40,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.99] flex flex-col justify-between gap-3 cursor-pointer">
+            <div class="flex flex-col gap-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1">2025년 Q2 제품 로드맵 및 핵심 마일스톤</h4>
+                <span class="material-symbols-outlined text-[18px] text-secondary flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+              </div>
+              <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 leading-relaxed">
+                데스크탑 반응형 웹 전환과 신규 오프라인 동기화 엔진 개발 완료 목표. 5월 중순 클로즈드 베타 테스트를 거쳐 성능 지표 30% 개선 검증 예정.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#업무</span>
+                <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#기획</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-tertiary">오늘 오전 10:24</span>
+            </div>
+          </article>
+
+          <!-- Pinned Card 2 -->
+          <article class="w-full bg-surface-container-low rounded-xl p-4 md:p-5 shadow-[0_2px_10px_-2px_rgba(60,50,40,0.05)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.99] flex flex-col justify-between gap-3 cursor-pointer">
+            <div class="flex flex-col gap-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1">도서 &lt;생각의 탄생&gt; 발췌 및 인사이트</h4>
+                <span class="material-symbols-outlined text-[18px] text-secondary flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+              </div>
+              <!-- Quote block -->
+              <div class="bg-surface-container rounded-lg p-2.5 flex items-start gap-2">
+                <span class="material-symbols-outlined text-[18px] text-primary mt-0.5">format_quote</span>
+                <p class="font-body-sm text-body-sm text-on-surface italic line-clamp-2">
+                  "관찰은 시각적 수동성을 넘어서는 적극적인 지적 활동이며, 본질을 꿰뚫는 출발점이다."
+                </p>
+              </div>
+              <!-- Checklist preview -->
+              <div class="flex flex-col gap-1.5 pt-0.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 rounded-full bg-primary flex items-center justify-center text-on-primary text-[10px]">✓</span>
+                  <span class="font-body-sm text-body-sm text-tertiary line-through truncate">3장 유추 파트 요약 및 스크랩 정리</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 rounded-full bg-primary flex items-center justify-center text-on-primary text-[10px]">✓</span>
+                  <span class="font-body-sm text-body-sm text-tertiary line-through truncate">팀 주간 독서 세미나 발표 슬라이드 초안</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#독서</span>
+                <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#인사이트</span>
+              </div>
+              <span class="font-label-sm text-label-sm text-tertiary">어제</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Recent Notes Section (모바일 2열 -> 태블릿 3열 -> 데스크톱 4열) -->
+      <section class="flex flex-col gap-3">
+        <div class="flex items-center justify-between px-0.5">
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">최근 메모</h3>
+          <button class="text-tertiary hover:text-on-surface p-1.5 rounded-full hover:bg-surface-container flex items-center gap-1 transition-colors cursor-pointer" type="button">
+            <span class="hidden sm:inline font-label-sm text-label-sm">최신순</span>
+            <span class="material-symbols-outlined text-[20px]">sort</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 items-stretch">
+          <!-- Card 3: Jeju Workation -->
+          <article class="w-full bg-surface-container-low rounded-xl p-4 shadow-[0_2px_8px_-2px_rgba(60,50,40,0.04)] hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between gap-3 min-h-[200px] transition-all active:scale-[0.98] cursor-pointer">
+            <div class="flex flex-col gap-2.5">
+              <h4 class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-2">제주도 워케이션 숙소 및 카페 리스트</h4>
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-start gap-1.5">
+                  <span class="w-3.5 h-3.5 mt-0.5 rounded-full bg-primary flex items-center justify-center text-on-primary text-[9px] flex-shrink-0">✓</span>
+                  <span class="font-body-sm text-body-sm text-tertiary line-through truncate">성산 스테이 예약 확인</span>
+                </div>
+                <div class="flex items-start gap-1.5">
+                  <span class="w-3.5 h-3.5 mt-0.5 rounded-full bg-surface-container-highest flex-shrink-0"></span>
+                  <span class="font-body-sm text-body-sm text-on-surface-variant truncate">세화 코워킹 방문</span>
+                </div>
+                <div class="flex items-start gap-1.5">
+                  <span class="w-3.5 h-3.5 mt-0.5 rounded-full bg-surface-container-highest flex-shrink-0"></span>
+                  <span class="font-body-sm text-body-sm text-on-surface-variant truncate">렌터카 체크인</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-outline-variant/20">
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#여행</span>
+              <span class="font-label-sm text-label-sm text-tertiary">4월 18일</span>
+            </div>
+          </article>
+
+          <!-- Card 4: Branding Color Palette -->
+          <article class="w-full bg-surface-container-low rounded-xl p-4 shadow-[0_2px_8px_-2px_rgba(60,50,40,0.04)] hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between gap-3 min-h-[200px] transition-all active:scale-[0.98] cursor-pointer">
+            <div class="flex flex-col gap-2.5">
+              <h4 class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-2">신규 브랜딩 컬러 팔레트 &amp; 폰트</h4>
+              <div class="flex flex-col gap-1.5 bg-surface-container rounded-lg p-2.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-4 h-4 rounded-full bg-primary flex-shrink-0 shadow-xs"></span>
+                  <span class="w-4 h-4 rounded-full bg-primary-container flex-shrink-0 shadow-xs"></span>
+                  <span class="w-4 h-4 rounded-full bg-secondary flex-shrink-0 shadow-xs"></span>
+                  <span class="w-4 h-4 rounded-full bg-surface-dim flex-shrink-0 shadow-xs"></span>
+                </div>
+                <p class="font-label-sm text-label-sm text-tertiary">Forest Deep + 따뜻한 한지 텍스처</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-outline-variant/20">
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#디자인</span>
+              <span class="font-label-sm text-label-sm text-tertiary">4월 15일</span>
+            </div>
+          </article>
+
+          <!-- Card 5: Weekly Grocery Checklist -->
+          <article class="w-full bg-surface-container-low rounded-xl p-4 shadow-[0_2px_8px_-2px_rgba(60,50,40,0.04)] hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between gap-3 min-h-[200px] transition-all active:scale-[0.98] cursor-pointer">
+            <div class="flex flex-col gap-2.5">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-tertiary">checklist</span>
+                <h4 class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1">주간 장보기 &amp; 식단</h4>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input checked class="w-3.5 h-3.5 accent-primary rounded cursor-pointer" type="checkbox" />
+                  <span class="font-body-sm text-body-sm text-tertiary line-through truncate">그릭 요거트</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input checked class="w-3.5 h-3.5 accent-primary rounded cursor-pointer" type="checkbox" />
+                  <span class="font-body-sm text-body-sm text-tertiary line-through truncate">아몬드 브리즈</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input class="w-3.5 h-3.5 accent-primary rounded cursor-pointer" type="checkbox" />
+                  <span class="font-body-sm text-body-sm text-on-surface truncate">바나나 1송이</span>
+                </label>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-outline-variant/20">
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#생활</span>
+              <span class="font-label-sm text-label-sm text-tertiary">4월 12일</span>
+            </div>
+          </article>
+
+          <!-- Card 6: Design Tokens Code Block -->
+          <article class="w-full bg-surface-container-low rounded-xl p-4 shadow-[0_2px_8px_-2px_rgba(60,50,40,0.04)] hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between gap-3 min-h-[200px] transition-all active:scale-[0.98] cursor-pointer">
+            <div class="flex flex-col gap-2.5">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-primary">data_object</span>
+                <h4 class="font-headline-sm text-headline-sm text-on-surface leading-snug line-clamp-1">토큰 정리</h4>
+              </div>
+              <div class="bg-surface-container-highest/60 rounded-lg p-2.5 font-mono-code text-[12px] text-on-surface-variant overflow-hidden leading-relaxed">
+                <div class="text-primary font-semibold">// colors</div>
+                <div class="truncate">forest: #0f5238</div>
+                <div class="truncate">ivory: #faf9f6</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-outline-variant/20">
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">#개발</span>
+              <span class="font-label-sm text-label-sm text-tertiary">4월 10일</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Quote of the Day -->
+      <section class="mt-space-xl p-4 md:p-5 rounded-xl bg-surface-container-low/70 flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary">
+          <span class="material-symbols-outlined text-[20px]">edit_note</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-label-sm text-label-sm text-tertiary">오늘의 문장 조각</span>
+          <p class="font-display-title-mobile text-[16px] md:text-[18px] leading-snug text-on-surface-variant italic">
+            "기억은 흐려지지만, 종이 위의 잉크는 영원히 숨을 쉰다."
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Mobile Floating Action Button (md 미만에서만 표시, 데스크톱은 사이드바 버튼 사용) -->
+  <aside class="md:hidden fixed right-5 bottom-20 z-40">
+    <button aria-label="새 메모 작성" class="h-14 px-5 rounded-full bg-primary-container text-on-primary flex items-center justify-center gap-2 shadow-[0_8px_24px_-4px_rgba(45,106,79,0.35)] transition-all duration-200 active:scale-90 hover:brightness-110" id="fab-create-memo" type="button">
+      <span class="material-symbols-outlined text-[26px]">add</span>
+      <span class="font-label-md text-label-md font-semibold tracking-wide pr-0.5">새 메모</span>
+    </button>
+  </aside>
+
+  <!-- Mobile Bottom Navigation Bar (md 미만에서만 표시) -->
+  <nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.03)]">
+    <div class="h-16 px-margin flex items-center justify-around">
+      <a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] transition-colors text-primary font-semibold" href="#">
+        <span class="material-symbols-outlined text-[22px]">description</span>
+        <span class="font-label-sm text-label-sm mt-0.5">메모</span>
+      </a>
+      <a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors" href="#">
+        <span class="material-symbols-outlined text-[22px]">folder</span>
+        <span class="font-label-sm text-label-sm mt-0.5">폴더</span>
+      </a>
+      <a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors" href="#">
+        <span class="material-symbols-outlined text-[22px]">search</span>
+        <span class="font-label-sm text-label-sm mt-0.5">검색</span>
+      </a>
+      <a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant transition-colors" href="#">
+        <span class="material-symbols-outlined text-[22px]">tune</span>
+        <span class="font-label-sm text-label-sm mt-0.5">설정</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    // 필터 칩 선택 인터랙션
+    const chips = document.querySelectorAll('.filter-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => {
+          c.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+          c.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        });
+        chip.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+        chip.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+      });
+    });
+
+    // 체크리스트 토글 인터랙션
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const labelText = e.target.nextElementSibling;
+        if (labelText) {
+          if (e.target.checked) {
+            labelText.classList.add('line-through', 'text-tertiary');
+            labelText.classList.remove('text-on-surface');
+          } else {
+            labelText.classList.remove('line-through', 'text-tertiary');
+            labelText.classList.add('text-on-surface');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
